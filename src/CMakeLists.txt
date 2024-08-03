@@ -5,4 +5,7 @@ set(CMAKE_C_STANDARD 99)
 
 add_executable(src main.c
         QAM.c
-        DSP.c)
+        DSP.c
+        log.c
+        log.h
+)
