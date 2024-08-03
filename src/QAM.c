@@ -5,7 +5,8 @@
 # include "QAM.h"
 
 // QAM
-complex_signal QAM(int_signal input) {
+complex_signal QAM(const int_signal input) {
+    // Init output
     complex_signal output = init_complex_signal(input.size / 2);
 
     int byte;
@@ -31,14 +32,12 @@ complex_signal QAM(int_signal input) {
 }
 
 // QAM_TX
-complex_signal QAM_TX(int M, int Nfft, int NbrSymbols, int CP_L) {
+complex_signal QAM_TX(const int M, const int Nfft, const int NbrSymbols, const int CP_L) {
     // For file handling
     FILE *file;
     char linebuffer[BUF];
 
-    int k = log2(M); // Bits per symbol
-    int bits_per_symbol = 85;
-    // int numBits = bits_per_symbol*NbrSymbols*k; // Number of bits to process
+    const int k = log2(M); // Bits per symbol
 
     int numSamplesPerSymbol = 24; // Oversampling factor
 
