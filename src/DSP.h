@@ -102,5 +102,7 @@ complex_signal xcorr(complex_signal x, complex_signal y);
 // Performs multiple cross correlations of x on different portions of stream
 complex_signal *xcorr_csv(complex_signal input, complex_signal ref, int xcorrs, char filename[]);
 
+// Generates Gold Code
+int_signal goldCode(int regCount, int shiftSize, int sampleCount, int rootSize)
 
 #endif

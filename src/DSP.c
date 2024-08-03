@@ -328,3 +328,143 @@ complex_signal *xcorr_csv(complex_signal input, complex_signal ref, int xcorrs, 
 
     return output;
 }
+
+// Generates Gold Code
+int_signal goldCode(int regCount, int shiftSize, int sampleCount, int rootSize) {
+    // Initializes output signal
+    int_signal y = init_int_signal(sampleCount + 1);
+
+    int N = pow(2, regCount) - 1;
+
+    int len1, len2;
+    int taps1[6], taps2[6];
+
+    // Sets taps1 & taps2 depending on regCount
+    switch (regCount) {
+        case 3:
+            len1 = len2 = 2;
+            taps1[0] = taps2[0] = 3;
+            taps1[1] = taps2[1] = 2;
+            break;
+        case 4:
+            len1 = len2 = 2;
+            taps1[0] = 4;
+            taps1[1] = 1;
+            taps2[0] = 4;
+            taps2[1] = 3;
+            break;
+        case 5:
+            len1 = 2;
+            len2 = 4;
+            taps1[0] = 5;
+            taps1[1] = 2;
+            taps2[0] = 5;
+            taps2[1] = 4;
+            taps2[2] = 3;
+            taps2[3] = 2;
+            break;
+        case 6:
+            len1 = 2;
+            len2 = 4;
+            taps1[0] = 6;
+            taps1[1] = 1;
+            taps2[0] = 6;
+            taps2[1] = 5;
+            taps2[2] = 2;
+            taps2[3] = 1;
+            break;
+        case 7:
+            len1 = 2;
+            len2 = 4;
+            taps1[0] = 7;
+            taps1[1] = 3;
+            taps2[0] = 7;
+            taps2[1] = 3;
+            taps2[2] = 2;
+            taps2[3] = 1;
+            break;
+        case 9:
+            len1 = 2;
+            len2 = 4;
+            taps1[0] = 9;
+            taps1[1] = 4;
+            taps2[0] = 9;
+            taps2[1] = 6;
+            taps2[2] = 4;
+            taps2[3] = 3;
+            break;
+        case 10:
+            len1 = 4;
+            len2 = 6;
+            taps1[0] = 10;
+            taps1[1] = 8;
+            taps1[2] = 5;
+            taps1[3] = 1;
+            taps2[0] = 10;
+            taps2[1] = 7;
+            taps2[2] = 6;
+            taps2[3] = 4;
+            taps2[4] = 2;
+            taps2[5] = 1;
+            break;
+        case 11:
+            len1 = 2;
+            len2 = 4;
+            taps1[0] = 11;
+            taps1[1] = 2;
+            taps2[0] = 11;
+            taps2[1] = 8;
+            taps2[2] = 5;
+            taps2[3] = 2;
+            break;
+    }
+
+    // Initializes reg1 & reg2
+    int reg1[regCount], reg2[regCount];
+    reg1[0] = reg2[0] = -1;
+    for (int i = 1; i < regCount; i++) {
+        reg1[i] = reg2[i] = 1;
+    }
+
+    // Intialization
+    int prbs1[N], prbs2[N];
+    int feedback1, feedback2;
+
+    // Feedback through shift registers
+    for (int k = 0; k < N; k++) {
+        feedback1 = feedback2 = 1;
+
+        for (int i = 0; i < len1; i++) {
+            feedback1 *= reg1[taps1[i] - 1];
+        }
+
+        for (int i = 0; i < len2; i++) {
+            feedback2 *= reg2[taps2[i] - 1];
+        }
+
+        prbs1[k] = reg1[regCount - 1];
+        prbs2[k] = reg2[regCount - 1];
+
+        // Updates reg1 & reg2
+        for (int i = regCount - 1; i > 0; i--) {
+            reg1[i] = reg1[i - 1];
+            reg2[i] = reg2[i - 1];
+        }
+
+        reg1[0] = feedback1;
+        reg2[0] = feedback2;
+    }
+
+    // Generates gold code
+    int gold[N];
+    for (int i = 0; i < N; i++) {
+        gold[i] = -1 * prbs1[i] * prbs2[(i + shiftSize) % N];
+    }
+
+    // Adjusts for sample count and root size
+    for (int i = 0; i < sampleCount; i++) {
+        y.data[i] = (gold[i % rootSize] + 1) / 2;
+    }
+
+    return y;
+}
