@@ -4,8 +4,8 @@
 // Various Digital signal processing functions
 
 // Header Guard
-#ifndef DSP
-#define DSP
+#ifndef DSP_H
+#define DSP_H
 
 
 // Inclusions

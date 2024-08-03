@@ -4,8 +4,8 @@
 
 
 // Header Guard
-#ifndef QAM_HEADER
-#define QAM_HEADER
+#ifndef QAM_H
+#define QAM_H
 
 
 #define _USE_MATH_DEFINES
@@ -17,7 +17,7 @@
 complex_signal QAM(int_signal input);
 
 // QAM_TX
-complex_signal QAM_TX(int M, int Nfft, int NbrSymbols,int CP_L);
+complex_signal QAM_TX(int M, int Nfft, int NbrSymbols, int CP_L);
 
 
 #endif
