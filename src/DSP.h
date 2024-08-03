@@ -103,6 +103,6 @@ complex_signal xcorr(complex_signal x, complex_signal y);
 complex_signal *xcorr_csv(complex_signal input, complex_signal ref, int xcorrs, char filename[]);
 
 // Generates Gold Code
-int_signal goldCode(int regCount, int shiftSize, int sampleCount, int rootSize)
+int_signal generate_gold_code(int regCount, int shiftSize, int sampleCount, int rootSize);
 
 #endif

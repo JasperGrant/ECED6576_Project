@@ -6,17 +6,10 @@
 #include <complex.h>
 #include "QAM.h"
 
-int main (void)
-{
-    printf("Hello, World!\n");
+int main(void) {
+   // Generate gold code
+   int_signal gold = generate_gold_code(11, 0, 2048, 2047);
 
-    complex_signal my_sig;
-    real_signal my_sig_2;
-
-    convolve(my_sig, my_sig_2);
-
-    
-
-    printf("Size of complex double: %lu\n", sizeof(complex double));
-    return 0;
+   // Apply QAM
+   complex_signal qam = QAM(gold);
 }
