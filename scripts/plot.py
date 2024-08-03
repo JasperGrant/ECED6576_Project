@@ -10,7 +10,7 @@ def plot_real_signal(file, title):
     plt.figure()
     plt.plot(signal)
     plt.title(title)
-    plt.xlabel("Time")
+    plt.xlabel("Sample")
     plt.ylabel("Amplitude")
 
 
@@ -34,7 +34,7 @@ def plot_autocorrelation(file, title):
     plt.figure()
     plt.plot(autocorrelation)
     plt.title(title)
-    plt.xlabel("Time")
+    plt.xlabel("Sample")
     plt.ylabel("Amplitude")
 
 

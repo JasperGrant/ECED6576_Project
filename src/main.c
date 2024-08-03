@@ -5,7 +5,8 @@
 #include "QAM.h"
 #include "log.h"
 
-int main(void) {
+int main(void)
+{
    // Generate gold code
    int_signal gold = generate_gold_code(11, 0, 2048, 2047);
 
@@ -30,7 +31,4 @@ int main(void) {
    // Downsample QAM
 
    // Equalize somewhere in here
-
-   // Autocorrelate gold code for sanity check
-
 }
