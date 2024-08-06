@@ -16,8 +16,8 @@
 // QAM
 complex_signal QAM(int_signal input);
 
-// QAM_TX
-complex_signal QAM_TX(int M, int Nfft, int NbrSymbols, int CP_L);
+// Demodulate QAM
+int_signal demod_QAM(const complex_signal input);
 
 
 #endif
