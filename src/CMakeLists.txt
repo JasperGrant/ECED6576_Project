@@ -8,4 +8,8 @@ add_executable(src main.c
         DSP.c
         log.c
         log.h
+        equalizer.c
+        equalizer.h
+        wav.c
+        wav.h
 )
