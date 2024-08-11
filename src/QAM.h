@@ -11,13 +11,11 @@
 #define _USE_MATH_DEFINES
 
 #include <stdio.h>
+#include <assert.h>
 #include "DSP.h"
 
-// QAM
-complex_signal QAM(int_signal input);
+real_signal mod_QAM(int_signal input, int carrier_freq, int sample_rate);
 
-// Demodulate QAM
-int_signal demod_QAM(const complex_signal input);
-
+int_signal demod_QAM(real_signal input, int carrier_freq, int sample_rate);
 
 #endif
