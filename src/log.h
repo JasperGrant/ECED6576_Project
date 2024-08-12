@@ -18,4 +18,6 @@ void log_complex_signal(complex_signal signal, char *filename);
 // Function to log a real_signal to a file
 void log_real_signal(real_signal signal, char *filename);
 
+real_signal load_real_signal(char *filename, int num_samples);
+
 #endif //LOG_H

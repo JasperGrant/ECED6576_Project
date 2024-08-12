@@ -30,4 +30,22 @@ void log_real_signal(real_signal signal, char *filename) {
     fclose(file);
 }
 
+// Function to load a real_signal from a file
+real_signal load_real_signal(char *filename, int num_samples) {
+    FILE *file = fopen(filename, "r");
+    real_signal signal = init_real_signal(num_samples);
+    for (int i = 0; i < num_samples; i++) {
+        fscanf(file, "%lf\n", &signal.data[i]);
+    }
+    fclose(file);
+    return signal;
+}
+
+
+
+
+
+
+
+
 
