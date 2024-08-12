@@ -4,9 +4,9 @@
 
 #include "wav.h"
 
-int write_wav_real(real_signal signal, char *filename, int sample_rate) {
+int write_wav_real(real_signal signal, char *filename, int sample_rate, int upsample_factor) {
     // Setup buffer for signal length
-    double buffer[signal.size];
+    float buffer[signal.size];
 
     // Setup new wav header
     struct wav_header header;
@@ -22,7 +22,7 @@ int write_wav_real(real_signal signal, char *filename, int sample_rate) {
     header.format = 1; // 1 for PCM
     header.num_channels = 1;
     header.sample_rate = sample_rate;
-    header.bits_per_sample = 64;
+    header.bits_per_sample = 32;
     header.bytes_per_second = header.sample_rate * header.num_channels * header.bits_per_sample / 8;
     header.bytes_per_sample = header.num_channels * header.bits_per_sample / 8;
 
@@ -31,27 +31,40 @@ int write_wav_real(real_signal signal, char *filename, int sample_rate) {
         buffer[i] = signal.data[i];
     }
 
-    header.dlength = signal.size * header.bytes_per_sample;
+    header.dlength = signal.size * header.bytes_per_sample * upsample_factor;
     header.flength = header.dlength + sizeof(struct wav_header);
 
     FILE *fp = fopen(filename, "wb");
 
     fwrite(&header, sizeof(struct wav_header), 1, fp);
-    fwrite(buffer, sizeof(double), signal.size, fp);
+    for (int i = 0; i < signal.size; i++) {
+        for (int j = 0; j < upsample_factor; j++) {
+            fwrite(&buffer[i], sizeof(float), 1, fp);
+        }
+    }
+
+    fclose(fp);
 
     return 0;
 }
 
-real_signal read_wav_real(char *filename) {
+real_signal read_wav_real(char *filename, int upsample_factor) {
     // Open file
     FILE *fp = fopen(filename, "rb");
     // Read header
     struct wav_header header;
     fread(&header, sizeof(struct wav_header), 1, fp);
     // Based on length of header read data
-    int data_len = header.dlength / sizeof(double);
-    double buffer[data_len];
-    fread(buffer, sizeof(double), data_len, fp);
+    int data_len = (header.dlength / sizeof(float)) / upsample_factor;
+    float buffer[data_len];
+    // Only read every upsample_factor-th sample
+    for (int i = 0; i < data_len; i++) {
+        fread(&buffer[i], sizeof(float), 1, fp);
+        for (int j = 0; j < upsample_factor - 1; j++) {
+            float temp;
+            fread(&temp, sizeof(float), 1, fp);
+        }
+    }
     // Close file
     fclose(fp);
 

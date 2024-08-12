@@ -178,3 +178,15 @@ int_signal generate_gold_code(int regcount, int shiftsize, int sampleCount, int 
 
     return y;
 }
+
+real_signal upsample(real_signal signal, int factor) {
+    real_signal output = init_real_signal(signal.size * factor);
+
+    for (int i = 0; i < signal.size; i++) {
+        for (int j = 0; j < factor; j++) {
+            output.data[i * factor + j] = signal.data[i];
+        }
+    }
+
+    return output;
+}

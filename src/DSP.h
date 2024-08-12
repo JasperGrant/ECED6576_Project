@@ -59,4 +59,6 @@ int_signal repeat_signal(int_signal signal, int repetitions);
 // Generates Gold Code
 int_signal generate_gold_code(int regCount, int shiftsize, int sampleCount, int rootSize);
 
+real_signal upsample(real_signal signal, int factor);
+
 #endif

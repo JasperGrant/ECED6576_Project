@@ -27,8 +27,8 @@ struct wav_header {
     int32_t dlength;
 };
 
-int write_wav_real(real_signal signal, char *filename, int sample_rate);
+int write_wav_real(real_signal signal, char *filename, int sample_rate, int upsample_factor);
 
-real_signal read_wav_real(char *filename);
+real_signal read_wav_real(char *filename, int upsample_factor);
 
 #endif //WAV_H
