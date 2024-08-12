@@ -5,9 +5,6 @@
 #include "wav.h"
 
 int write_wav_real(real_signal signal, char *filename, int sample_rate, int upsample_factor) {
-    // Setup buffer for signal length
-    float buffer[signal.size];
-
     // Setup new wav header
     struct wav_header header;
 
@@ -26,11 +23,6 @@ int write_wav_real(real_signal signal, char *filename, int sample_rate, int upsa
     header.bytes_per_second = header.sample_rate * header.num_channels * header.bits_per_sample / 8;
     header.bytes_per_sample = header.num_channels * header.bits_per_sample / 8;
 
-    // Put signal into buffer
-    for (int i = 0; i < signal.size; i++) {
-        buffer[i] = signal.data[i];
-    }
-
     header.dlength = signal.size * header.bytes_per_sample * upsample_factor;
     header.flength = header.dlength + sizeof(struct wav_header);
 
@@ -39,7 +31,7 @@ int write_wav_real(real_signal signal, char *filename, int sample_rate, int upsa
     fwrite(&header, sizeof(struct wav_header), 1, fp);
     for (int i = 0; i < signal.size; i++) {
         for (int j = 0; j < upsample_factor; j++) {
-            fwrite(&buffer[i], sizeof(float), 1, fp);
+            fwrite(&signal.data[i], sizeof(float), 1, fp);
         }
     }
 
