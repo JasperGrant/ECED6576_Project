@@ -42,7 +42,7 @@ int_signal repeat_signal(int_signal signal, int repetitions) {
     return repeated_signal;
 }
 
-//Generates Gold Code
+// Generates Gold Code
 int_signal generate_gold_code(int regcount, int shiftsize, int sampleCount, int rootSize) {
     int N = (int) pow(2, regcount) - 1;
 
@@ -179,13 +179,54 @@ int_signal generate_gold_code(int regcount, int shiftsize, int sampleCount, int 
     return y;
 }
 
-real_signal upsample(real_signal signal, int factor) {
-    real_signal output = init_real_signal(signal.size * factor);
+complex_signal convolve(complex_signal x, real_signal h) {
+    // Variables
+    int h_start, x_start, x_end;
 
-    for (int i = 0; i < signal.size; i++) {
-        for (int j = 0; j < factor; j++) {
-            output.data[i * factor + j] = signal.data[i];
+    complex_signal y;
+    y.size = h.size + x.size - 1;
+    y.data = (complex double *) calloc(y.size, sizeof(complex double));
+
+    // Convolution
+    for (int i = 0; i < y.size; i++) {
+        x_start = MAX(0, i-h.size+1);
+        x_end = MIN(i+1, x.size);
+        h_start = MIN(i, h.size-1);
+
+        for (int j = x_start; j < x_end; j++) {
+            y.data[i] += h.data[h_start--] * x.data[j];
         }
+    }
+
+    return y;
+}
+
+complex_signal upsample(complex_signal input, real_signal FIR, int up_factor, int offset) {
+    complex_signal up;
+    up.size = input.size * up_factor;
+    up.data = (complex double *) malloc(up.size * sizeof(complex double));
+
+    // Upsampling
+    for (int i = 0; i < input.size; i++) {
+        up.data[i * up_factor] = input.data[i];
+    }
+
+    // Applies FIR filter
+    complex_signal y = convolve(up, FIR);
+
+
+    complex_signal output;
+
+    // The offset can be set to either 0 or 1 to match with
+    // python and matlabs implementations of the upsampel function
+    if (offset == 0) {
+        output = y;
+        output.size = (input.size - 1) * up_factor + FIR.size;
+    }
+
+    if (offset == 1) {
+        output.size = up.size;
+        output.data = y.data + (FIR.size / 2);
     }
 
     return output;
