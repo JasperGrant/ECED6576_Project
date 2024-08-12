@@ -4,6 +4,7 @@
 
 #include "QAM.h"
 #include "log.h"
+#include "wav.h"
 
 # define CARRIER_FREQ 8000
 # define SAMPLE_RATE 96000
@@ -27,6 +28,14 @@ int main(void) {
 
    // Log QAM
    log_real_signal(qam, "../../log/qam.csv");
+
+   // Save QAM in wav file
+   write_wav_real(qam, "../../wav/qam.wav", SAMPLE_RATE);
+
+   real_signal qam_unwaved = read_wav_real("../../wav/qam.wav");
+
+   log_real_signal(qam_unwaved, "../../log/qam_unwaved.csv");
+
 
    // Transmit QAM
    // Simulate channel with model
