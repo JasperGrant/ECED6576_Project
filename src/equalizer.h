@@ -16,7 +16,7 @@ typedef struct {
     real_signal ideal_signal;
 } AdaptiveEqualizer;
 
-AdaptiveEqualizer *init_equalizer(int filter_order, double step_size);
+AdaptiveEqualizer *init_equalizer(int filter_order, double step_size, real_signal ideal_signal);
 
 void train_equalizer(AdaptiveEqualizer *equalizer, real_signal signal);
 
