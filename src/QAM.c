@@ -18,7 +18,7 @@ real_signal mod_QAM(const int_signal input, const int carrier_freq, const int sa
     for (int i = 0; i < input.size / 2; i++) {
         // QPSK
         // char to hold symbol from 0 to 3
-        char binary_symbol = (input.data[2 * i] & 0x01) + ((input.data[2 * i + 1] & 0x01) << 1);
+        char binary_symbol = (input.data[2 * i + 1] & 0x01) + ((input.data[2 * i] & 0x01) << 1);
         // complex char to hold PSK
         double complex qpsk_symbol;
         // time
@@ -66,13 +66,13 @@ int_signal demod_QAM(const real_signal input, const int carrier_freq, const int 
                 output.data[2 * i] = -1;
                 output.data[2 * i + 1] = -1;
             } else {
-                output.data[2 * i] = 1;
-                output.data[2 * i + 1] = -1;
+                output.data[2 * i] = -1;
+                output.data[2 * i + 1] = 1;
             }
         } else {
             if (imag > 0) {
-                output.data[2 * i] = -1;
-                output.data[2 * i + 1] = 1;
+                output.data[2 * i] = 1;
+                output.data[2 * i + 1] = -1;
             } else {
                 output.data[2 * i] = 1;
                 output.data[2 * i + 1] = 1;
