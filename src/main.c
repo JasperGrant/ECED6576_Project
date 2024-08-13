@@ -12,12 +12,11 @@
 #define CARRIER_FREQ 8000
 #define SAMPLE_RATE 96000
 #define SYMBOL_RATE 600
-#define EQUALIZER_OFFSET 0
+#define EQUALIZER_OFFSET 682
 #define GOLD_SEQUENCE_LENGTH 2048
 #define GOLD_SEQUENCE_REPETITIONS 24
 #define GOLD_SEQUENCES_FOR_TRAINING 23
 #define GOLD_SEQUENCES_FOR_TESTING 1
-
 
 int main(void) {
     // Generate gold code
@@ -47,7 +46,7 @@ int main(void) {
 
     // QAM to real waveform
     real_signal upconverted = QAM_to_real_waveform(upsampled, CARRIER_FREQ, SAMPLE_RATE);
-    log_real_signal(upconverted, "../../log/qam_unwaved.csv"); // Log QAM unwaved
+    log_real_signal(upconverted, "../../log/upconverted.csv"); // Log QAM unwaved
 
     // Normalize signal
     int_signal normalized = normalize(upconverted);
@@ -56,13 +55,20 @@ int main(void) {
     // Save QAM in wav file
     write_wav_real(normalized, "../../wav/qam.wav", SAMPLE_RATE);
 
-
     // At this point the QAM_received.wav file should be transmitted to the receiver
     // Further analysis will be done with this file containing the effects of the channel
+    // Simulate two tap channel
+    // real_signal channel_impulse_response = load_real_signal("../../filters/two_tap_channel.csv", 2);
+    // log_real_signal(channel_impulse_response, "../../log/channel_impulse_response.csv"); // Log channel impulse response
+    // complex_signal channel = convolve(upsampled, channel_impulse_response);
+    // real_signal channel_real = QAM_to_real_waveform(channel, CARRIER_FREQ, SAMPLE_RATE);
+    // log_real_signal(channel_real, "../../log/channel_real.csv"); // Log channel real signal
+    // int_signal normalized_channel = normalize(channel_real);
+    // log_int_signal(normalized_channel, "../../log/channel.csv"); // Log channel signal
+    // write_wav_real(normalized_channel, "../../wav/channel.wav", SAMPLE_RATE);
 
-
-    //Read QAM from wav file
-    int_signal received_signal = read_wav_real("../../wav/qam.wav");
+    // Read QAM from wav file
+    int_signal received_signal = read_wav_real("../../wav/qam_received.wav");
     log_int_signal(received_signal, "../../log/received_signal.csv"); // Log received signal
 
     // Convert received signal to complex signal
@@ -77,8 +83,8 @@ int main(void) {
     int_signal demod = demod_QAM(downsampled);
     log_int_signal(demod, "../../log/demod.csv"); // Log demodulated signal
 
-    //Setup for equalization
-    // Load ideal gold sequence
+    // Setup for equalization
+    //  Load ideal gold sequence
     int_signal ideal_gold = load_int_signal("../../log/gold_code_ref.csv", GOLD_SEQUENCE_LENGTH);
     // Init equalizer
     AdaptiveEqualizer *equalizer = init_equalizer(GOLD_SEQUENCE_LENGTH, ideal_gold);
