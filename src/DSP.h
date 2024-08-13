@@ -63,4 +63,9 @@ complex_signal convolve(complex_signal x, real_signal h);
 
 complex_signal upsample(complex_signal input, real_signal FIR, int up_factor, int offset);
 
+// Downsamples the signal
+complex_signal downsample(complex_signal input, int downfactor);
+
+int_signal normalize(real_signal input);
+
 #endif

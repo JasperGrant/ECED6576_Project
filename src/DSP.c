@@ -231,3 +231,42 @@ complex_signal upsample(complex_signal input, real_signal FIR, int up_factor, in
 
     return output;
 }
+
+
+// Downsamples the signal
+complex_signal downsample(complex_signal input, int downfactor) {
+    // Creates output
+    complex_signal output;
+    output.size = input.size / (double) downfactor;
+    output.data = (complex double *) malloc(output.size * sizeof(complex double));
+
+    // Downsamples
+    for (int i = 0; i < output.size; i++) {
+        output.data[i] = input.data[i * downfactor];
+    }
+
+    return output;
+}
+
+// Normalizes a signal to a short int
+int_signal normalize(real_signal input) {
+    // Allocates memory for output signal
+    int_signal output;
+    output.size = input.size;
+    output.data = (short *) malloc(output.size * sizeof(short));
+
+    // Finds maximum of input signal
+    double max = 0;
+    for (int i = 0; i < input.size; i++) {
+        if (fabs(input.data[i]) > max) {
+            max = fabs(input.data[i]);
+        }
+    }
+
+    // Writes output signal
+    for (int i = 0; i < input.size; i++) {
+        output.data[i] = (short) (input.data[i] * (pow(2, 15) - 1) / max);
+    }
+
+    return output;
+}
