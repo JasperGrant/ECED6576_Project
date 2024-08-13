@@ -110,7 +110,7 @@ if __name__ == "__main__":
     plot_correlation_to_reference(
         "log/equalization_results/before.csv",
         "log/gold_code_ref.csv",
-        "Autocorrelation before Equalization",
+        "Correlation to Gold Sequence before Equalization",
     )
 
     compare_plots(
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     plot_correlation_to_reference(
         "log/equalization_results/after.csv",
         "log/gold_code_ref.csv",
-        "Autocorrelation after Equalization",
+        "Correlation to Gold Sequence after Equalization",
     )
 
     # plot_real_signal("log/channel_impulse_response.csv", "Channel Impulse Response")
