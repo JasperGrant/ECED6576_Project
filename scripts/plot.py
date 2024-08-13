@@ -54,7 +54,7 @@ def plot_autocorrelation(file, title):
 def plot_correlation_to_reference(file, ref, title):
     signal = [float(line.strip()) for line in open(file, "r")]
     reference = [float(line.strip()) for line in open(ref, "r")]
-    correlation = np.correlate(signal, reference, mode="full")
+    correlation = abs(np.correlate(signal, reference, mode="full"))
     # Normalize
     correlation = correlation / np.max(correlation)
     plt.figure()
@@ -74,15 +74,60 @@ def plot_fft(file, title):
     plt.ylabel("Magnitude")
 
 
+def compare_plots(filesnames):
+    fig, axs = plt.subplots(len(filesnames), 1)
+    for i, file in enumerate(filesnames):
+        signal = [float(line.strip()) for line in open(file, "r")]
+        axs[i].plot(signal)
+        axs[i].set_title(file)
+        axs[i].set_xlabel("Sample")
+        axs[i].set_ylabel("Amplitude")
+
+    # Calculate error between the first signal and the rest
+    signal = [float(line.strip()) for line in open(filesnames[0], "r")]
+    for i, file in enumerate(filesnames[1:]):
+        compare_signal = [float(line.strip()) for line in open(file, "r")]
+        error = np.sum(np.abs(np.array(signal) - np.array(compare_signal)))
+        print(f"Error between {filesnames[0]} and {file}: {error}")
+
+
 if __name__ == "__main__":
 
+    # plot_autocorrelation("log/gold_code_ref.csv", "Gold Code Autocorrelation")
+
+    # plot_correlation_to_reference(
+    #     "log/gold_code.csv",
+    #     "log/gold_code_ref.csv",
+    #     "Tx Correlation with initial Gold Sequence",
+    # )
+
+    # plot_correlation_to_reference(
+    #     "log/demod.csv",
+    #     "log/gold_code_ref.csv",
+    #     "Rx Correlation with initial Gold Sequence",
+    # )
+
     plot_correlation_to_reference(
-        "log/gold_code.csv", "log/gold_code_ref.csv", "Gold Code Autocorrelation"
+        "log/equalization_results/before.csv",
+        "log/gold_code_ref.csv",
+        "Autocorrelation before Equalization",
+    )
+
+    compare_plots(
+        [
+            "log/gold_code_ref.csv",
+            "log/equalization_results/before.csv",
+            "log/equalization_results/after.csv",
+        ]
     )
 
     plot_correlation_to_reference(
-        "log/demod.csv", "log/gold_code_ref.csv", "Demodulated Signal Autocorrelation"
+        "log/equalization_results/after.csv",
+        "log/gold_code_ref.csv",
+        "Autocorrelation after Equalization",
     )
+
+    # plot_real_signal("log/channel_impulse_response.csv", "Channel Impulse Response")
 
     # plot_real_signal("log/gold_code.csv", "Gold Sequence")
 
