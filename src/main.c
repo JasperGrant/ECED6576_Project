@@ -4,6 +4,7 @@
 
 #include <iso646.h>
 
+#include "equalizer.h"
 #include "QAM.h"
 #include "log.h"
 #include "wav.h"
@@ -11,15 +12,21 @@
 #define CARRIER_FREQ 8000
 #define SAMPLE_RATE 96000
 #define SYMBOL_RATE 600
+#define EQUALIZER_OFFSET 0
+#define GOLD_SEQUENCE_LENGTH 2048
+#define GOLD_SEQUENCE_REPETITIONS 24
+#define GOLD_SEQUENCES_FOR_TRAINING 23
+#define GOLD_SEQUENCES_FOR_TESTING 1
+
 
 int main(void) {
     // Generate gold code
-    int_signal gold = generate_gold_code(11, 0, 2048, 2047);
+    int_signal gold = generate_gold_code(11, 0, GOLD_SEQUENCE_LENGTH, GOLD_SEQUENCE_LENGTH - 1);
 
     // 2048 symbols
     // In QAM reduced to 1024 symbols
     // To get about 600 QAM symbols a second we need about 24 gold signals
-    int_signal repeated_gold = repeat_signal(gold, 24);
+    int_signal repeated_gold = repeat_signal(gold, GOLD_SEQUENCE_REPETITIONS);
     log_int_signal(repeated_gold, "../../log/gold_code.csv"); // Log repeated gold code
 
     // Apply QAM
@@ -66,10 +73,28 @@ int main(void) {
     complex_signal downsampled = downsample(received_complex_signal, 160);
     log_complex_signal(downsampled, "../../log/downsampled.csv"); // Log downsampled signal
 
-    // Equalize
-
-
     // Apply QAM demodulation
     int_signal demod = demod_QAM(downsampled);
     log_int_signal(demod, "../../log/demod.csv"); // Log demodulated signal
+
+    //Setup for equalization
+    // Load ideal gold sequence
+    int_signal ideal_gold = load_int_signal("../../log/gold_code_ref.csv", GOLD_SEQUENCE_LENGTH);
+    // Init equalizer
+    AdaptiveEqualizer *equalizer = init_equalizer(GOLD_SEQUENCE_LENGTH, ideal_gold);
+    // Train equalizer
+    for (int i = 0; i < GOLD_SEQUENCES_FOR_TRAINING; i++) {
+        // Get slice representing gold sequence
+        int_signal gold_slice = get_signal_slice(demod, i * GOLD_SEQUENCE_LENGTH + EQUALIZER_OFFSET,
+                                                 (i + 1) * GOLD_SEQUENCE_LENGTH + EQUALIZER_OFFSET);
+        train_equalizer(equalizer, gold_slice);
+    }
+    // Apply equalizer
+    for (int i = 0; i < GOLD_SEQUENCES_FOR_TESTING; i++) {
+        // Get slice representing gold sequence
+        int_signal gold_slice = get_signal_slice(demod, i * GOLD_SEQUENCE_LENGTH + EQUALIZER_OFFSET,
+                                                 (i + 1) * GOLD_SEQUENCE_LENGTH + EQUALIZER_OFFSET);
+        log_int_signal(gold_slice, "../../log/equalization_results/before.csv");
+        log_int_signal(use_equalizer(equalizer, gold_slice), "../../log/equalization_results/after.csv");
+    }
 }
