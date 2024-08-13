@@ -9,19 +9,14 @@
 #include "stdlib.h"
 
 typedef struct {
-    int filter_order;
-    double *coefficients;
-    double *buffer;
-    double step_size;
-    real_signal ideal_signal;
+    double *weights;
+    int_signal ideal_signal;
 } AdaptiveEqualizer;
 
-AdaptiveEqualizer *init_equalizer(int filter_order, double step_size, real_signal ideal_signal);
+AdaptiveEqualizer *init_equalizer(int signal_size, int_signal ideal_signal);
 
-void train_equalizer(AdaptiveEqualizer *equalizer, real_signal signal);
+void train_equalizer(AdaptiveEqualizer *equalizer, int_signal signal);
 
-real_signal use_equalizer(AdaptiveEqualizer *equalizer, real_signal signal);
-
-void free_equalizer(AdaptiveEqualizer *equalizer);
+int_signal use_equalizer(AdaptiveEqualizer *equalizer, int_signal signal);
 
 #endif // EQUALIZER_H
