@@ -50,16 +50,13 @@ real_signal QAM_to_real_waveform(complex_signal input, const int carrier_freq, c
     for (int i = 0; i < input.size; i++) {
         // Time
         double t = (double) i / sample_rate;
-        // QPSK symbol
-        complex double qpsk_symbol = input.data[i];
         // Real part
-        output.data[i] = creal(qpsk_symbol) * cos(2 * M_PI * carrier_freq * t) - cimag(qpsk_symbol) * sin(
-                             2 * M_PI * carrier_freq * t);
+        output.data[i] = creal(input.data[i] * cexp(-2 * I * M_PI * carrier_freq * t));
     }
     return output;
 }
 
-complex_signal real_waveform_to_QAM(real_signal input, const int carrier_freq, const int sample_rate) {
+complex_signal real_waveform_to_QAM(int_signal input, const int carrier_freq, const int sample_rate) {
     complex_signal output = init_complex_signal(input.size);
 
     for (int i = 0; i < input.size; i++) {

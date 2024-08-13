@@ -18,7 +18,7 @@ complex_signal mod_QAM(int_signal input);
 
 real_signal QAM_to_real_waveform(complex_signal input, int carrier_freq, int sample_rate);
 
-complex_signal real_waveform_to_QAM(real_signal input, const int carrier_freq, const int sample_rate);
+complex_signal real_waveform_to_QAM(int_signal input, const int carrier_freq, const int sample_rate);
 
 int_signal demod_QAM(complex_signal input);
 
