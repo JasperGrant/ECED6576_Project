@@ -270,3 +270,11 @@ int_signal normalize(real_signal input) {
 
     return output;
 }
+
+int_signal get_signal_slice(int_signal whole_signal, int start, int end) {
+    int_signal slice = init_int_signal(end - start);
+    for (int i = start; i < end; i++) {
+        slice.data[i - start] = whole_signal.data[i];
+    }
+    return slice;
+}

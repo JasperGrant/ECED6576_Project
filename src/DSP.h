@@ -68,4 +68,6 @@ complex_signal downsample(complex_signal input, int downfactor);
 
 int_signal normalize(real_signal input);
 
+int_signal get_signal_slice(int_signal whole_signal, int start, int end);
+
 #endif

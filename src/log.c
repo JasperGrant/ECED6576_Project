@@ -41,6 +41,17 @@ real_signal load_real_signal(char *filename, int num_samples) {
     return signal;
 }
 
+// Function to load an int_signal from a file
+int_signal load_int_signal(char *filename, int num_samples) {
+    FILE *file = fopen(filename, "r");
+    int_signal signal = init_int_signal(num_samples);
+    for (int i = 0; i < num_samples; i++) {
+        fscanf(file, "%d\n", &signal.data[i]);
+    }
+    fclose(file);
+    return signal;
+}
+
 
 
 

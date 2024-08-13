@@ -20,4 +20,6 @@ void log_real_signal(real_signal signal, char *filename);
 
 real_signal load_real_signal(char *filename, int num_samples);
 
+int_signal load_int_signal(char *filename, int num_samples);
+
 #endif //LOG_H
