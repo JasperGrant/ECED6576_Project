@@ -33,6 +33,10 @@ def plot_real_and_complex_signal(file, title):
     ]
     plt.figure()
     plt.plot([value.real for value in signal])
+    plt.title(title)
+    plt.xlabel("Sample")
+    plt.ylabel("Amplitude")
+    plt.figure()
     plt.plot([value.imag for value in signal])
     plt.title(title)
     plt.xlabel("Sample")
@@ -74,6 +78,29 @@ def plot_fft(file, title):
     plt.ylabel("Magnitude")
 
 
+def plot_magnitude_spectrum(file, title):
+    signal = [float(line.strip()) for line in open(file, "r")]
+    plt.figure()
+    plt.magnitude_spectrum(signal, scale="dB")
+    plt.title(title)
+    plt.xlabel("Frequency")
+    plt.ylabel("Magnitude")
+
+
+def normalize_and_plot_constellation(file, title):
+    signal = [
+        complex(float(line.strip().split(",")[0]), float(line.strip().split(",")[1]))
+        for line in open(file, "r")
+    ]
+    max_value = max([abs(value) for value in signal])
+    signal = [value / max_value for value in signal]
+    plt.figure()
+    plt.scatter([value.real for value in signal], [value.imag for value in signal])
+    plt.title(title)
+    plt.xlabel("Real")
+    plt.ylabel("Imaginary")
+
+
 def compare_plots(filesnames):
     fig, axs = plt.subplots(len(filesnames), 1)
     for i, file in enumerate(filesnames):
@@ -100,32 +127,34 @@ if __name__ == "__main__":
     #     "log/gold_code_ref.csv",
     #     "Tx Correlation with initial Gold Sequence",
     # )
+    # normalize_and_plot_constellation("log/qam.csv", "Gold Code Constellation")
+    # normalize_and_plot_constellation(
+    #     "log/pulse_shaped.csv", "Gold Code Ref Constellation"
+    # )
+    # normalize_and_plot_constellation("log/upsampled.csv", "QAM Constellation")
+    normalize_and_plot_constellation("log/downsampled.csv", "QAM Constellation")
 
     # plot_correlation_to_reference(
     #     "log/demod.csv",
     #     "log/gold_code_ref.csv",
-    #     "Rx Correlation with initial Gold Sequence",
+    #     "Demodulated Signal Correlation with Gold Sequence",
     # )
 
-    plot_correlation_to_reference(
-        "log/equalization_results/before.csv",
-        "log/gold_code_ref.csv",
-        "Correlation to Gold Sequence before Equalization",
-    )
+    # compare_plots(
+    #     [
+    #         "log/gold_code_ref.csv",
+    #         "log/equalization_results/before.csv",
+    #         "log/equalization_results/after.csv",
+    #     ]
+    # )
 
-    compare_plots(
-        [
-            "log/gold_code_ref.csv",
-            "log/equalization_results/before.csv",
-            "log/equalization_results/after.csv",
-        ]
-    )
+    # plot_correlation_to_reference(
+    #     "log/equalization_results/after.csv",
+    #     "log/gold_code_ref.csv",
+    #     "Correlation to Gold Sequence after Equalization",
+    # )
 
-    plot_correlation_to_reference(
-        "log/equalization_results/after.csv",
-        "log/gold_code_ref.csv",
-        "Correlation to Gold Sequence after Equalization",
-    )
+    # plot_real_signal("log/received_signal.csv", "Received Signal")
 
     # plot_real_signal("log/channel_impulse_response.csv", "Channel Impulse Response")
 
