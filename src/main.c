@@ -68,7 +68,7 @@ int main(void) {
     // write_wav_real(normalized_channel, "../../wav/channel.wav", SAMPLE_RATE);
 
     // Read QAM from wav file
-    int_signal received_signal = read_wav_real("../../wav/qam_received.wav");
+    int_signal received_signal = read_wav_real("../../wav/qam_received_cropped.wav");
     log_int_signal(received_signal, "../../log/received_signal.csv"); // Log received signal
 
     // Convert received signal to complex signal
