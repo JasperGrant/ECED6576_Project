@@ -12,9 +12,9 @@ The transmitter is responsible for generating a QAM signal and saving it to a .w
 
 ## Channel
 
-![Channel](img/test_Setup.png)
+![Channel](img/test_setup.png)
 
-The channel exists between a small speaker and a larger GTI hydrophone. The channel is not inside an anechoic chamber, so there is a lot of noise present in the channel. The following plots show the signal at the transmitter and receibver, the signal FFT at the transmitter and receiver, and the signal correlation to the Gold sequence at the transmitter and receiver.
+The channel exists between a small speaker and a larger GTI hydrophone. The channel is not inside an anechoic chamber, so there is a lot of noise present. The following plots show the signal at the transmitter and receiver, the signal FFT at the transmitter and receiver, and the signal correlation to the Gold sequence at the transmitter and receiver.
 
 ![ChannelTxandRx](img/channel_tx_rx.png)
 
