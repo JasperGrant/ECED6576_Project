@@ -20,9 +20,9 @@ AdaptiveEqualizer *init_equalizer(int signal_size, int_signal ideal_signal)
 
 void train_equalizer(AdaptiveEqualizer *equalizer, int_signal signal)
 {
-    double mu = 0.1; // Step size for LMS algorithm
+    double mu = 0.1;
 
-    // Update weights using LMS
+    // Update weights
     for (int i = 0; i < signal.size; i++)
     {
         // Calculate error
